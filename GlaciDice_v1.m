@@ -196,11 +196,11 @@ EX_models=[climatecurves.age(2:end),4543e6];
 
 %% Text output
 disp(' ')
-disp('------------------')
-disp('GLACIDICE')
-disp('Glaciers do play dice with boulders')
+disp('---------------------------------------')
+disp('GlaciDice')
+disp('Glaciers do play dice with the boulders')
 disp('Angel Rodes, 2022')
-disp('------------------')
+disp('---------------------------------------')
 % disp(['ASEA' char(9)...
 %     'Exhumation age range'])
 % disp(['(' consts.nuclidesstring{consts.nuclides==nuclide} ' a)' char(9)...
@@ -273,9 +273,18 @@ plot(EX_models,EX_models,'--g') % 1:1 line
 % for sample=1:numel(ASEA) 
 %     plot([1 1]*ASEA(sample),[min_ex_age(sample) max_ex_age(sample)],'-r') % sample range
 % end
-plot(EX_models,ASEA_models_bottom,'.r','MarkerSize', 0.1) % bottom models
-plot(EX_models,ASEA_models_side,'.m','MarkerSize', 0.1) % side models
-plot(EX_models,ASEA_models_top,'.b','MarkerSize', 0.1) % top models
+% plot(EX_models,ASEA_models_bottom,'.r','MarkerSize', 0.1) % bottom models
+% plot(EX_models,ASEA_models_side,'.m','MarkerSize', 0.1) % side models
+% plot(EX_models,ASEA_models_top,'.b','MarkerSize', 0.1) % top models
+for model=1:size(ASEA_models,1)
+    if ISSIDE(model,1,1)
+        plot(EX_models,ASEA_models(model,:),'.m','MarkerSize', 0.1) % side models
+    elseif ISBOTTOM(model,1,1)
+        plot(EX_models,ASEA_models(model,:),'.r','MarkerSize', 0.1) % bottom models
+    else
+        plot(EX_models,ASEA_models(model,:),'.b','MarkerSize', 0.1) % top models
+    end
+end
 plot(EX_models,max(ASEA_models_bottom),'-r','LineWidth',2) % bottom models
 plot(EX_models,max(ASEA_models_side),'-m') % side models
 plot(EX_models,max(ASEA_models_top),'-b','LineWidth',2) % top models
