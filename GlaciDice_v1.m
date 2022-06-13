@@ -213,9 +213,11 @@ disp('---------------------------------------')
 
 %% Plots
 
+x_limits=[1e3 1e7];
+
 % Plot model
-figure
-subplot(2,1,1)
+figure('Units','normalized','Position',[0.5 0 0.5 1])
+subplot(8,1,[1 4])
 hold on
 plot([1 2],[1 1]*d18O_thresholds(1),'-b','LineWidth',2) % for legend
 plot([1 2],[1 1]*d18O_thresholds(1),'-g','LineWidth',2) % for legend
@@ -223,7 +225,7 @@ plot(climatecurves.age,climatecurves.d18O,'-','Color','k','LineWidth',2) % plot 
 legend(['Glaciated (' num2str(ice_depth) ' m of ice)'],...
     ['Exposed'],...
     climatecurves.ver,...
-    'Location','southwest')
+    'Location','southoutside')
 legend('AutoUpdate','off')
 for h=d18O_model
     glaciated=climatecurves.age(climatecurves.d18O>=h);
@@ -236,14 +238,14 @@ end
 plot(climatecurves.age,climatecurves.d18O,'-','Color','k','LineWidth',2) % plot d18O curve again
 ylabel('\delta^{18}O')
 set(gca, 'Xdir', 'reverse')
-xlabel('Age (a)')
+% xlabel('Age (a)')
 set(gca, 'XScale', 'log')
-xlim([1e3 1e7])
+xlim(x_limits)
 box on 
 grid on
 title('GlaciDice model')
 
-subplot(2,1,2)
+subplot(8,1,5)
 hold on
 COLOR=[0 0 1;
     0.2 0.2 0.8;
@@ -251,25 +253,49 @@ COLOR=[0 0 1;
     0.6 0.6 0.4;
     0.8 0.8 0.2;
     1 0 0];
-for side=1:6
-    select=(DICEPOS==side);
-    plot(T(select),sample_index(select),'.','MarkerSize', 0.1,'Color',COLOR(side,:))
-end
+% for side=1:6
+%     select=(DICEPOS==side);
+%     plot(T(select),sample_index(select),'.','MarkerSize', 0.01,'Color',COLOR(side,:))
+% end
+dice_roll=diff(DICEPOS,1,3)>0;
+x=T(:,:,2:end);
+y=sample_index(:,:,2:end);
+plot(x(dice_roll),y(dice_roll),'.k','MarkerSize', 0.1)
+
+
 set(gca, 'Xdir', 'reverse')
-xlabel('Age (a)')
+% xlabel('Age (a)')
 set(gca, 'XScale', 'log')
-xlim([1e3 1e7])
+xlim(x_limits)
+ylim([1 size(T,1)])
 box on 
 % grid on
-title('Dice position (blue=top red=bottom)')
+% title('Dice position (blue=top red=bottom)')
+title('Dice rolls')
 ylabel('model#')
 
 
 
 % plot apparent age vs. exhumation age (model)
-figure
+% figure
+subplot(8,1,[6 8])
 hold on
-plot(EX_models,EX_models,'--g') % 1:1 line
+plot(EX_models(1,:,:),EX_models(1,:,:),'--g') % 1:1 line
+text(1e6,1e6,'   1:1','Color','g')
+
+plot(EX_models(1,:,:),EX_models(1,:,:)./10,':g') % 10:1 line
+text(1e6,1e6/10,'   10:1','Color','g')
+
+plot(EX_models(1,:,:),EX_models(1,:,:)./100,':g') % 100:1 line
+text(1e6,1e6/100,'   100:1','Color','g')
+
+plot(EX_models(1,:,:),EX_models(1,:,:)./1000,':g') % 100:1 line
+text(1e6,1e6/1000,'   1000:1','Color','g')
+
+% ratio_ages=EX_models./ASEA_models;
+% AR=ceil(median(ratio_ages(:))); % average age ratio
+% plot(EX_models*AR,EX_models,'--g') % AR:1 line
+% text(1e6*AR,1e6,[num2str(AR) ':1'],'Color','g')
 % for sample=1:numel(ASEA) 
 %     plot([1 1]*ASEA(sample),[min_ex_age(sample) max_ex_age(sample)],'-r') % sample range
 % end
@@ -293,9 +319,9 @@ plot(EX_models,min(ASEA_models_side),'-m') % side models
 plot(EX_models,min(ASEA_models_top),'-b','LineWidth',2) % top models
 plot(EX_models,max(ASEA_models_bottom),'--r','LineWidth',1) % bottom models
 plot(EX_models,min(ASEA_models_bottom),'--r','LineWidth',1) % bottom models
-
+set(gca, 'Xdir', 'reverse')
 set(gca, 'XScale', 'log')
-xlim([1e3 1e7])
+xlim(x_limits)
 set(gca, 'YScale', 'log')
 ylim([1e2 1e8])
 grid on
