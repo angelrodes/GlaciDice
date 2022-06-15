@@ -2,9 +2,9 @@
 
 # Glaci-Dice
 
->[*Glaciers do play dice with the boulders*](https://en.wiktionary.org/wiki/God_does_not_play_dice_with_the_universe)
-
 GLACIDICE is a model based on [NUNAIT](https://github.com/angelrodes/NUNAIT) that simulates the cosmonuclide accumulation on the faces of dice-shaped boulders that are shielded and rotated during glaciations.
+
+>[*Glaciers do play dice with the boulders*](https://en.wiktionary.org/wiki/God_does_not_play_dice_with_the_universe)
 
 Ángel Rodés, 2022  
 [www.angelrodes.com](www.angelrodes.com)
