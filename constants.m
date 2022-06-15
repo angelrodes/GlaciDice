@@ -129,7 +129,7 @@ consts.rho=2.65; % g/cm^3
 % Boca Raton, FL: CRC Press. ISBN 978-1-4987-5429-3.
 consts.rhoice=0.917; % g/cm^3
 
-%% Default limits for glacial modeling
+%% Default limits for glacial modeling (NUNAIT)
 
 % Periglacial weathering range
 % Marrero et al., 2018 https://doi.org/10.1016/j.epsl.2018.08.018
@@ -161,7 +161,7 @@ consts.present_ice_surface_uncert=[-25 25]; % m
 % Aparent ages are considered minimum (true) or not (false)
 consts.minimum_ages=false;
 
-%% Fitting parameters
+%% Fitting parameters (NUNAIT)
 % Define number of models to run
 consts.maxnmodels=50000; % maximum number of models to run. Increase this number for better results. (Minimum=10000)
 consts.targetnmodelsonesigma=300; % desired fitting models when start converging (Minimum=100)
@@ -170,7 +170,15 @@ consts.targetnmodelsonesigma=300; % desired fitting models when start converging
 consts.minmodelstoconverge=3000; % learning models (Minimum=1000)
 consts.convergencestep=100; % how often to check convergence and update (suggested: 100)
 
-% save consts consts
+%% Parameters GlaciDice
+
+consts.boulder_size=[150 200]; % side of the diced boulders in cm
+consts.last_deglaciation=[11000 11500]; % years (range for last deglaciation)
+consts.ice_depth=1000; % m (deph under ice during glaciations)
+consts.nuclide=10; % the mass of the cosmonuclide
+consts.number_of_models=500;
+
+%% save consts consts
 save('consts.mat','consts','-v7')
 end
 

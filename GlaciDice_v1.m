@@ -3,19 +3,7 @@ clear
 close all hidden
 
 %% TO DO
-% create model
-% waitbar?
-% plot randomized dices with colours under the D18O curve
-% plot exhumation vs. apparent top-side-bottom
 % create dialog
-
-
-%% Input parameters
-boulder_size=[150 200]; % side of the diced boulders in cm
-last_deglaciation=[11000 11500]; % years (range for last deglaciation)
-ice_depth=1000; % m (deph under ice during glaciations)
-nuclide=10; % the mass of the cosmonuclide
-number_of_models=500;
 
 
 
@@ -26,7 +14,55 @@ end
 load('consts.mat')
 density=consts.rho; % rock density
 densityice=consts.rhoice; % ice density
+
+%% Input parameters
     
+% Allow user to change model parameters
+reset_default_values=1;
+while reset_default_values==1
+    Questions = {...
+        'Boulder size minimum (cm):',...
+        'Boulder size maximum (cm):'...
+        'Last deglaciation minimum (years):',...
+        'Last deglaciation maximum (years):',...
+        'Ice depth during glaciations (m):',...
+        'Nuclide mass (3, 10, 14, 21, 26, 36):',...
+        'Number of dices to roll (# of models):',...
+        'Reset default values? (0=false, 1=true)'...
+        };
+    numinput=[consts.boulder_size,...
+        consts.last_deglaciation,...
+        consts.ice_depth,...
+        consts.nuclide,...
+        consts.number_of_models,...
+        0];
+    dlgtitle = 'Model parameters';
+    dims = 1;
+    definput =cellstr(num2str(numinput(:)));
+    answers = inputdlg(Questions,dlgtitle,dims,definput);
+    if ~isempty(answers)
+        % convert to numbers
+        numanswers=cellfun(@str2num,answers)';
+        consts.boulder_size=numanswers(1:2);
+        consts.last_deglaciation=numanswers(3:4);
+        consts.ice_depth=numanswers(5);
+        consts.nuclide=numanswers(6);
+        consts.number_of_models=numanswers(7);
+        reset_default_values=numanswers(8);
+        if reset_default_values~=0
+            constants
+            load('consts.mat')
+        end
+    end
+end
+save('consts.mat','consts','-v7')
+
+boulder_size=consts.boulder_size; % side of the diced boulders in cm
+last_deglaciation=consts.last_deglaciation; % years (range for last deglaciation)
+ice_depth=consts.ice_depth; % m (deph under ice during glaciations)
+nuclide=consts.nuclide; % the mass of the cosmonuclide
+number_of_models=consts.number_of_models;
+
 
 %% shielding functions
 side_shielding = @(z,L) 0.5+0.5*exp(-z.*consts.rho./(2*L*0.8));
@@ -216,8 +252,8 @@ disp('---------------------------------------')
 x_limits=[1e3 1e7];
 
 % Plot model
-figure('Units','normalized','Position',[0.5 0 0.5 1])
-subplot(8,1,[1 4])
+figure('Units','normalized','Position',[0 0 0.5 1])
+subplot(5,1,[1 4])
 hold on
 plot([1 2],[1 1]*d18O_thresholds(1),'-b','LineWidth',2) % for legend
 plot([1 2],[1 1]*d18O_thresholds(1),'-g','LineWidth',2) % for legend
@@ -225,7 +261,7 @@ plot(climatecurves.age,climatecurves.d18O,'-','Color','k','LineWidth',2) % plot 
 legend(['Glaciated (' num2str(ice_depth) ' m of ice)'],...
     ['Exposed'],...
     climatecurves.ver,...
-    'Location','southoutside')
+    'Location','southeast')
 legend('AutoUpdate','off')
 for h=d18O_model
     glaciated=climatecurves.age(climatecurves.d18O>=h);
@@ -245,7 +281,7 @@ box on
 grid on
 title('GlaciDice model')
 
-subplot(8,1,5)
+subplot(5,1,5)
 hold on
 COLOR=[0 0 1;
     0.2 0.2 0.8;
@@ -264,21 +300,20 @@ plot(x(dice_roll),y(dice_roll),'.k','MarkerSize', 0.1)
 
 
 set(gca, 'Xdir', 'reverse')
-% xlabel('Age (a)')
+xlabel('Age (a)')
 set(gca, 'XScale', 'log')
 xlim(x_limits)
 ylim([1 size(T,1)])
 box on 
 % grid on
 % title('Dice position (blue=top red=bottom)')
-title('Dice rolls')
+title(['Dice rolls (dice side: ' num2str(min(boulder_size/100)) ' - ' num2str(max(boulder_size/100)) ' m)'])
 ylabel('model#')
 
 
 
 % plot apparent age vs. exhumation age (model)
-% figure
-subplot(8,1,[6 8])
+figure('Units','normalized','Position',[0.5 0 0.5 1])
 hold on
 plot(EX_models(1,:,:),EX_models(1,:,:),'--g') % 1:1 line
 text(1e6,1e6,'   1:1','Color','g')
